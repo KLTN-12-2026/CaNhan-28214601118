@@ -10,7 +10,7 @@ export const communityPage = {
           <form id="post-form" class="stack-form">
             <label for="post-topic">Chủ đề</label><select id="post-topic" name="topic"><option value="lo-au">Lo âu</option><option value="tam-trang">Tâm trạng</option><option value="mat-ngu">Mất ngủ</option><option value="hoc-duong">Học đường</option><option value="khac">Khác</option></select>
             <label for="post-content">Nội dung</label><textarea id="post-content" name="content" rows="5" minlength="3" maxlength="3000" placeholder="Chia sẻ theo cách bạn thấy thoải mái…" required></textarea>
-            <label class="toggle-row"><input type="checkbox" name="isAnonymous" checked /><span>Đăng ẩn danh</span><small>Không lưu UID trên bài viết</small></label>
+            <label for="post-identity">Cách hiển thị danh tính</label><select id="post-identity" name="anonymityMode"><option value="unlinked">Ẩn danh, không gắn UID vào bài viết</option><option value="moderator_only">Ẩn danh với cộng đồng, admin có thể tra cứu</option><option value="public">Hiện tên hiển thị</option></select>
             <button class="button button-dark" type="submit">Gửi để kiểm duyệt <span aria-hidden="true">→</span></button><p class="form-message" id="post-message" role="status"></p>
           </form>
         </section>
@@ -24,7 +24,7 @@ export const communityPage = {
       try {
         const { posts } = await apiRequest('/posts');
         list.innerHTML = posts.length ? posts.map((post) => `
-          <article class="post-item"><div class="post-meta"><span class="post-author">${post.is_anonymous ? 'Ẩn danh' : escapeHtml(post.profiles?.display_name || 'Thành viên')}</span><span class="topic-tag">#${escapeHtml(post.topic)}</span></div><p>${escapeHtml(post.content)}</p><small>${new Date(post.created_at).toLocaleDateString('vi-VN')}</small></article>`).join('') : '<p class="muted">Chưa có bài viết được duyệt. Bạn có thể là người mở đầu.</p>';
+          <article class="post-item"><div class="post-meta"><span class="post-author">${escapeHtml(post.author_name || 'Ẩn danh')}</span><span class="topic-tag">#${escapeHtml(post.topic)}</span></div><p>${escapeHtml(post.content)}</p><small>${new Date(post.created_at).toLocaleDateString('vi-VN')}</small></article>`).join('') : '<p class="muted">Chưa có bài viết được duyệt. Bạn có thể là người mở đầu.</p>';
       } catch (error) {
         list.innerHTML = `<p class="muted">${escapeHtml(error.message)}<br>Thêm thông tin Supabase vào .env để tải bài viết.</p>`;
       }
@@ -40,10 +40,10 @@ export const communityPage = {
       try {
         await apiRequest('/posts', {
           method: 'POST',
-          body: JSON.stringify({ content: values.get('content'), topic: values.get('topic'), isAnonymous: values.has('isAnonymous') })
+          body: JSON.stringify({ content: values.get('content'), topic: values.get('topic'), anonymityMode: values.get('anonymityMode') })
         });
         form.reset();
-        form.querySelector('[name="isAnonymous"]').checked = true;
+        form.querySelector('[name="anonymityMode"]').value = 'unlinked';
         message.textContent = 'Bài viết đã gửi và đang chờ kiểm duyệt.';
       } catch (error) {
         message.textContent = error.message === 'Sign in is required.' ? 'Đăng nhập để gửi bài viết.' : error.message;

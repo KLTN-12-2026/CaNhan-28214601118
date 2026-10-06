@@ -2,21 +2,66 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text not null default 'MindCare member' check (char_length(display_name) between 1 and 40),
+  role text not null default 'user' check (role in ('user', 'expert', 'admin')),
   reputation integer not null default 0 check (reputation between 0 and 1000),
   created_at timestamptz not null default now()
 );
 
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
-  author_user_id uuid references public.profiles (id) on delete set null,
+  author_user_id uuid references public.profiles (id) on delete cascade,
   topic text not null check (char_length(topic) between 1 and 40),
   content text not null check (char_length(content) between 3 and 3000),
   is_anonymous boolean not null default true,
-  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  anonymity_mode text not null default 'unlinked'
+    check (anonymity_mode in ('unlinked', 'moderator_only', 'public')),
+  status text not null default 'pending_ai'
+    check (status in ('pending_ai', 'pending_review', 'published', 'rejected', 'removed')),
   created_at timestamptz not null default now(),
-  constraint anonymous_posts_have_no_author check (
-    (is_anonymous and author_user_id is null) or (not is_anonymous and author_user_id is not null)
+  constraint post_anonymity_matches_author check (
+    (anonymity_mode = 'unlinked' and is_anonymous and author_user_id is null) or
+    (anonymity_mode = 'moderator_only' and is_anonymous and author_user_id is not null) or
+    (anonymity_mode = 'public' and not is_anonymous and author_user_id is not null)
   )
+);
+
+alter table public.profiles
+  add column if not exists role text not null default 'user'
+  check (role in ('user', 'expert', 'admin'));
+alter table public.posts
+  add column if not exists anonymity_mode text not null default 'unlinked';
+alter table public.posts drop constraint if exists posts_status_check;
+alter table public.posts drop constraint if exists anonymous_posts_have_no_author;
+alter table public.posts drop constraint if exists post_anonymity_matches_author;
+
+update public.posts
+set anonymity_mode = case
+  when not is_anonymous then 'public'
+  when author_user_id is null then 'unlinked'
+  else 'moderator_only'
+end,
+status = case status
+  when 'approved' then 'published'
+  when 'pending' then 'pending_ai'
+  else status
+end;
+
+alter table public.posts alter column status set default 'pending_ai';
+alter table public.posts
+  add constraint posts_status_check
+  check (status in ('pending_ai', 'pending_review', 'published', 'rejected', 'removed'));
+alter table public.posts
+  add constraint post_anonymity_matches_author check (
+    (anonymity_mode = 'unlinked' and is_anonymous and author_user_id is null) or
+    (anonymity_mode = 'moderator_only' and is_anonymous and author_user_id is not null) or
+    (anonymity_mode = 'public' and not is_anonymous and author_user_id is not null)
+  );
+
+create table if not exists public.user_post_limits (
+  user_id uuid primary key references public.profiles (id) on delete cascade,
+  limit_date date not null default current_date,
+  post_count integer not null default 0 check (post_count between 0 and 10),
+  last_post_at timestamptz
 );
 
 create table if not exists public.check_ins (
@@ -35,15 +80,41 @@ alter table public.profiles enable row level security;
 alter table public.posts enable row level security;
 alter table public.check_ins enable row level security;
 
-create policy "Approved posts are public" on public.posts
-  for select using (status = 'approved');
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
+
+drop policy if exists "Members can read their own posts" on public.posts;
+drop policy if exists "Admins can review all posts" on public.posts;
+drop policy if exists "Approved posts are public" on public.posts;
+drop policy if exists "Members can read own profile" on public.profiles;
+drop policy if exists "Authors of approved posts are visible" on public.profiles;
+drop policy if exists "Members can update their own display name" on public.profiles;
+drop policy if exists "Members can manage own check-ins" on public.check_ins;
+drop policy if exists "Members can submit posts as themselves" on public.posts;
+
+create policy "Members can read their own posts" on public.posts
+  for select to authenticated using (author_user_id = auth.uid());
+create policy "Admins can review all posts" on public.posts
+  for select to authenticated using (public.is_admin());
 create policy "Members can read own profile" on public.profiles
   for select to authenticated using (auth.uid() = id);
 create policy "Authors of approved posts are visible" on public.profiles
   for select using (
     exists (
       select 1 from public.posts
-      where posts.author_user_id = profiles.id and posts.status = 'approved'
+      where posts.author_user_id = profiles.id
+        and posts.anonymity_mode = 'public'
+        and posts.status = 'published'
     )
   );
 revoke update on public.profiles from anon, authenticated;
@@ -54,13 +125,82 @@ create policy "Members can update their own display name" on public.profiles
   for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
 create policy "Members can manage own check-ins" on public.check_ins
   for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "Members can submit posts as themselves" on public.posts;
 create policy "Members can submit posts as themselves" on public.posts
   for insert to authenticated with check (
-    status = 'pending' and (
-      (is_anonymous and author_user_id is null) or
-      (not is_anonymous and author_user_id = auth.uid())
+    status = 'pending_ai' and (
+      (anonymity_mode = 'unlinked' and is_anonymous and author_user_id is null) or
+      (anonymity_mode = 'moderator_only' and is_anonymous and author_user_id = auth.uid()) or
+      (anonymity_mode = 'public' and not is_anonymous and author_user_id = auth.uid())
     )
   );
+
+create or replace function public.enforce_post_rate_limit()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_limit public.user_post_limits;
+  v_today date := (now() at time zone 'Asia/Ho_Chi_Minh')::date;
+begin
+  if v_user_id is null then
+    raise exception 'Authentication is required to submit a post';
+  end if;
+
+  insert into public.user_post_limits (user_id, limit_date)
+  values (v_user_id, v_today)
+  on conflict (user_id) do nothing;
+
+  select * into v_limit
+  from public.user_post_limits
+  where user_id = v_user_id
+  for update;
+
+  if v_limit.limit_date < v_today then
+    update public.user_post_limits
+    set limit_date = v_today, post_count = 0, last_post_at = null
+    where user_id = v_user_id;
+    v_limit.post_count := 0;
+    v_limit.last_post_at := null;
+  end if;
+
+  if v_limit.post_count >= 10 then
+    raise exception 'RATE_LIMIT: daily post limit reached';
+  end if;
+  if v_limit.last_post_at > now() - interval '30 seconds' then
+    raise exception 'RATE_LIMIT: wait before submitting another post';
+  end if;
+
+  update public.user_post_limits
+  set post_count = post_count + 1, last_post_at = now()
+  where user_id = v_user_id;
+
+  new.status := 'pending_ai';
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_enforce_post_rate_limit on public.posts;
+create trigger trg_enforce_post_rate_limit
+  before insert on public.posts
+  for each row execute function public.enforce_post_rate_limit();
+
+create or replace view public.community_posts as
+  select p.id, p.topic, p.content, p.is_anonymous, p.created_at,
+         case when p.anonymity_mode = 'public' then author.display_name else 'Ẩn danh' end as author_name
+  from public.posts p
+  left join public.profiles author on author.id = p.author_user_id
+  where p.status = 'published';
+
+alter table public.user_post_limits enable row level security;
+revoke all on public.user_post_limits from anon, authenticated;
+revoke select on public.posts from public, anon;
+grant select on public.posts to authenticated;
+grant insert on public.posts to authenticated;
+grant select on public.community_posts to anon, authenticated;
 
 create or replace function public.create_profile_for_new_user()
 returns trigger

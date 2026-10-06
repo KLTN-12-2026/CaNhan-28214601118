@@ -35,6 +35,6 @@ supabase/schema.sql      Initial tables, constraints, RLS and profile trigger
 - `GET /api/posts`, `POST /api/posts` (new posts enter moderation as `pending`)
 - `GET /api/check-ins`, `POST /api/check-ins` (one check-in per member per day)
 
-Anonymous posts deliberately store `author_user_id = null`. This makes them unlinkable to a profile through the post row, including after publication. Do not add IP/device logging or expose database identifiers in public post responses if the product promise is complete anonymity.
+Posts support three identity modes: `unlinked` leaves `author_user_id` null on the post row; `moderator_only` stores the author for admin review but the public community view always masks the identity; `public` shows the display name. A separate per-account daily counter enforces spam limits without mapping unlinked posts back to the account. Unlinked posts cannot be attributed for per-author reputation or admin investigations. The public API reads `community_posts`, never the base table. Do not add IP/device logging or expose database identifiers in public post responses if the product promise is complete anonymity.
 
 AI risk detection, AI moderation, clinician recommendations, follows/friends, reputation rules, reports, weekly summaries/PDF export, panic escalation, and audio uploads are product extensions, not implemented clinical features in this starter. Treat check-ins and wellness content as supportive tools, not diagnosis or emergency care. Review privacy, consent, security, and clinical safety before a public launch.
