@@ -30,7 +30,7 @@ router.post('/', requireAuth, async (request, response, next) => {
     if (typeof topic !== 'string' || topic.length > 40) {
       return response.status(400).json({ error: 'A valid topic is required.' });
     }
-    const { data, error } = await request.supabase
+    const { error } = await request.supabase
       .from('posts')
       .insert({
         content: content.trim(),
@@ -38,11 +38,9 @@ router.post('/', requireAuth, async (request, response, next) => {
         is_anonymous: Boolean(isAnonymous),
         author_user_id: isAnonymous ? null : request.user.id,
         status: 'pending'
-      })
-      .select('id, topic, content, is_anonymous, created_at, status')
-      .single();
+      });
     if (error) return next(error);
-    return response.status(201).json({ post: data });
+    return response.status(201).json({ message: 'Post submitted for review.', status: 'pending' });
   } catch (error) {
     return next(error);
   }

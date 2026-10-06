@@ -136,3 +136,12 @@ create policy "Members can view their reputation history" on public.reputation_e
   for select to authenticated using (auth.uid() = user_id);
 create policy "Published knowledge is public" on public.knowledge_articles
   for select using (is_published);
+
+grant usage on schema public to anon, authenticated;
+grant select on public.posts to anon, authenticated;
+grant insert on public.posts to authenticated;
+grant select, insert, update on public.check_ins to authenticated;
+grant select, insert, delete on public.user_relationships to authenticated;
+grant select, insert on public.post_reports to authenticated;
+grant select on public.reputation_events to authenticated;
+grant select on public.knowledge_articles to anon, authenticated;
