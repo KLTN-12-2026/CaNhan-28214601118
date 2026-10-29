@@ -1,5 +1,9 @@
 # MindCare
 
+Repository: `CaNhan-28214601118`
+
+Xây dựng hệ thống tư vấn và chăm sóc sức khỏe tâm lý MindCare tích hợp trí tuệ nhân tạo - GVHD: ThS. Nguyễn Quang Ánh
+
 Starter project for an anonymous mental-health support platform. The current foundation includes a static HTML/CSS/JavaScript frontend, an Express API, Supabase Auth/Database wiring, daily check-ins, and a moderated community-post flow.
 
 ## Requirements
