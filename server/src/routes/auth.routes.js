@@ -1,76 +1,76 @@
-const { Router } = require('express');
-const { createSupabaseClient } = require('../config/supabase');
-const requireAuth = require('../middleware/require-auth');
+const { Router: taoBoDinhTuyen } = require('express');
+const { taoKhachHangSupabase } = require('../config/supabase');
+const yeuCauXacThuc = require('../middleware/require-auth');
 
-const router = Router();
+const boDinhTuyen = taoBoDinhTuyen();
 
-router.post('/signup', async (request, response, next) => {
+boDinhTuyen.post('/signup', async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { email, password, displayName } = request.body;
-    if (!email || !password || password.length < 8) {
-      return response.status(400).json({ error: 'Email and a password of at least 8 characters are required.' });
+    const { email: thuDienTu, password: matKhau, displayName: tenHienThi } = yeuCau.body;
+    if (!thuDienTu || !matKhau || matKhau.length < 8) {
+      return phanHoi.status(400).json({ error: 'Email and a password of at least 8 characters are required.' });
     }
-    const supabase = createSupabaseClient();
-    if (!supabase) return response.status(503).json({ error: 'Supabase is not configured yet.' });
+    const khachSupabase = taoKhachHangSupabase();
+    if (!khachSupabase) return phanHoi.status(503).json({ error: 'Supabase is not configured yet.' });
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { display_name: String(displayName || '').slice(0, 40) } }
+    const { data: duLieu, error: loi } = await khachSupabase.auth.signUp({
+      email: thuDienTu,
+      password: matKhau,
+      options: { data: { display_name: String(tenHienThi || '').slice(0, 40) } }
     });
-    if (error) return response.status(400).json({ error: error.message });
-    return response.status(201).json({ user: data.user, session: data.session });
-  } catch (error) {
-    return next(error);
+    if (loi) return phanHoi.status(400).json({ error: loi.message });
+    return phanHoi.status(201).json({ user: duLieu.user, session: duLieu.session });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-router.post('/login', async (request, response, next) => {
+boDinhTuyen.post('/login', async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { email, password } = request.body;
-    if (!email || !password) return response.status(400).json({ error: 'Email and password are required.' });
-    const supabase = createSupabaseClient();
-    if (!supabase) return response.status(503).json({ error: 'Supabase is not configured yet.' });
+    const { email: thuDienTu, password: matKhau } = yeuCau.body;
+    if (!thuDienTu || !matKhau) return phanHoi.status(400).json({ error: 'Email and password are required.' });
+    const khachSupabase = taoKhachHangSupabase();
+    if (!khachSupabase) return phanHoi.status(503).json({ error: 'Supabase is not configured yet.' });
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return response.status(401).json({ error: error.message });
-    return response.json({ user: data.user, session: data.session });
-  } catch (error) {
-    return next(error);
+    const { data: duLieu, error: loi } = await khachSupabase.auth.signInWithPassword({ email: thuDienTu, password: matKhau });
+    if (loi) return phanHoi.status(401).json({ error: loi.message });
+    return phanHoi.json({ user: duLieu.user, session: duLieu.session });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-router.get('/me', requireAuth, async (request, response, next) => {
+boDinhTuyen.get('/me', yeuCauXacThuc, async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { data, error } = await request.supabase
+    const { data: duLieu, error: loi } = await yeuCau.supabase
       .from('profiles')
       .select('display_name, reputation')
-      .eq('id', request.user.id)
+      .eq('id', yeuCau.user.id)
       .single();
-    if (error) return next(error);
-    return response.json({ user: { id: request.user.id, email: request.user.email }, profile: data });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.json({ user: { id: yeuCau.user.id, email: yeuCau.user.email }, profile: duLieu });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-router.patch('/me', requireAuth, async (request, response, next) => {
+boDinhTuyen.patch('/me', yeuCauXacThuc, async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const displayName = typeof request.body.displayName === 'string' ? request.body.displayName.trim() : '';
-    if (displayName.length < 1 || displayName.length > 40) {
-      return response.status(400).json({ error: 'Display name must be between 1 and 40 characters.' });
+    const tenHienThi = typeof yeuCau.body.displayName === 'string' ? yeuCau.body.displayName.trim() : '';
+    if (tenHienThi.length < 1 || tenHienThi.length > 40) {
+      return phanHoi.status(400).json({ error: 'Display name must be between 1 and 40 characters.' });
     }
-    const { data, error } = await request.supabase
+    const { data: duLieu, error: loi } = await yeuCau.supabase
       .from('profiles')
-      .update({ display_name: displayName })
-      .eq('id', request.user.id)
+      .update({ display_name: tenHienThi })
+      .eq('id', yeuCau.user.id)
       .select('display_name, reputation')
       .single();
-    if (error) return next(error);
-    return response.json({ profile: data });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.json({ profile: duLieu });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-module.exports = router;
+module.exports = boDinhTuyen;

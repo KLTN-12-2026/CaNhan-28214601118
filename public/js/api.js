@@ -1,22 +1,22 @@
-const API_BASE = '/api';
+const DUONG_DAN_API = '/api';
 
-export async function apiRequest(path, options = {}) {
-  const token = localStorage.getItem('mindcare_access_token');
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
+export async function guiYeuCauApi(duongDan, tuyChon = {}) {
+  const maTruyCap = localStorage.getItem('mindcare_access_token');
+  const phanHoi = await fetch(`${DUONG_DAN_API}${duongDan}`, {
+    ...tuyChon,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers
+      ...(maTruyCap ? { Authorization: `Bearer ${maTruyCap}` } : {}),
+      ...tuyChon.headers
     }
   });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || 'Không thể kết nối lúc này.');
-  return result;
+  const ketQua = await phanHoi.json().catch(() => ({}));
+  if (!phanHoi.ok) throw new Error(ketQua.error || 'Không thể kết nối lúc này.');
+  return ketQua;
 }
 
-export function escapeHtml(value = '') {
-  return String(value).replace(/[&<>"']/g, (character) => ({
+export function thoatMaHtml(giaTri = '') {
+  return String(giaTri).replace(/[&<>"']/g, (kyTu) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[character]);
+  })[kyTu]);
 }

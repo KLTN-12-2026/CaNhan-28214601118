@@ -1,33 +1,35 @@
-import { dashboardPage } from './pages/dashboard.js';
-import { communityPage } from './pages/community.js';
-import { checkInPage } from './pages/check-in.js';
-import { libraryPage } from './pages/library.js';
-import { accountPage } from './pages/account.js';
+import { trangTongQuan } from './pages/dashboard.js';
+import { trangCongDong } from './pages/community.js';
+import { trangCheckIn } from './pages/check-in.js';
+import { trangThuVien } from './pages/library.js';
+import { trangTaiKhoan } from './pages/account.js';
+import { trangBaiTest } from './pages/tu-danh-gia.js';
 
-const routes = {
-  '/': dashboardPage,
-  '/community': communityPage,
-  '/check-in': checkInPage,
-  '/library': libraryPage,
-  '/account': accountPage
+const cacTuyen = {
+  '/': trangTongQuan,
+  '/community': trangCongDong,
+  '/check-in': trangCheckIn,
+  '/bai-test': trangBaiTest,
+  '/library': trangThuVien,
+  '/account': trangTaiKhoan
 };
 
-export function startRouter() {
-  const outlet = document.querySelector('#app');
-  let cleanup = () => {};
+export function batDauBoDinhTuyen() {
+  const dauRa = document.querySelector('#app');
+  let donDep = () => {};
 
-  function render() {
-    cleanup();
-    const path = window.location.hash.slice(1).split('?')[0] || '/';
-    const page = routes[path] || dashboardPage;
-    outlet.innerHTML = page.render();
-    cleanup = page.mount?.(outlet) || (() => {});
-    document.querySelectorAll('[data-route]').forEach((link) => {
-      link.classList.toggle('is-active', link.dataset.route === path);
+  function veTrang() {
+    donDep();
+    const duongDan = window.location.hash.slice(1).split('?')[0] || '/';
+    const trang = cacTuyen[duongDan] || trangTongQuan;
+    dauRa.innerHTML = trang.ve();
+    donDep = trang.gan?.(dauRa) || (() => {});
+    document.querySelectorAll('[data-route]').forEach((lienKet) => {
+      lienKet.classList.toggle('is-active', lienKet.dataset.route === duongDan);
     });
-    outlet.focus({ preventScroll: true });
+    dauRa.focus({ preventScroll: true });
   }
 
-  window.addEventListener('hashchange', render);
-  render();
+  window.addEventListener('hashchange', veTrang);
+  veTrang();
 }

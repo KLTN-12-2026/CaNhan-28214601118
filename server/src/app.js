@@ -1,20 +1,20 @@
-const path = require('node:path');
-const express = require('express');
-const healthRoutes = require('./routes/health.routes');
-const authRoutes = require('./routes/auth.routes');
-const postRoutes = require('./routes/posts.routes');
-const checkInRoutes = require('./routes/check-ins.routes');
-const errorHandler = require('./middleware/error-handler');
+const duongDan = require('node:path');
+const ungDungExpress = require('express');
+const tuyenSucKhoe = require('./routes/health.routes');
+const tuyenTaiKhoan = require('./routes/auth.routes');
+const tuyenBaiViet = require('./routes/posts.routes');
+const tuyenCheckIn = require('./routes/check-ins.routes');
+const xuLyLoi = require('./middleware/error-handler');
 
-const app = express();
+const ungDung = ungDungExpress();
 
-app.use(express.json({ limit: '32kb' }));
-app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/check-ins', checkInRoutes);
-app.use('/api', (_request, response) => response.status(404).json({ error: 'API endpoint not found' }));
-app.use(express.static(path.resolve(__dirname, '../../public')));
-app.use(errorHandler);
+ungDung.use(ungDungExpress.json({ limit: '32kb' }));
+ungDung.use('/api/health', tuyenSucKhoe);
+ungDung.use('/api/auth', tuyenTaiKhoan);
+ungDung.use('/api/posts', tuyenBaiViet);
+ungDung.use('/api/check-ins', tuyenCheckIn);
+ungDung.use('/api', (_yeuCau, phanHoi) => phanHoi.status(404).json({ error: 'API endpoint not found' }));
+ungDung.use(ungDungExpress.static(duongDan.resolve(__dirname, '../../public')));
+ungDung.use(xuLyLoi);
 
-module.exports = app;
+module.exports = ungDung;

@@ -1,11 +1,11 @@
-const path = require('node:path');
-const dotenv = require('dotenv');
+const duongDan = require('node:path');
+const napCauHinh = require('dotenv');
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+napCauHinh.config({ path: duongDan.resolve(__dirname, '../../.env') });
 
-const app = require('./app');
-const port = Number(process.env.PORT) || 3000;
+const ungDung = require('./app');
+const cong = Number(process.env.PORT) || 3000;
 
-app.listen(port, () => {
-  console.log(`MindCare is running at http://localhost:${port}`);
+ungDung.listen(cong, () => {
+  console.log(`MindCare is running at http://localhost:${cong}`);
 });

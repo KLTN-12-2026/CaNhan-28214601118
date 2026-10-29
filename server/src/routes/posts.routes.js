@@ -1,52 +1,52 @@
-const { Router } = require('express');
-const { createSupabaseClient } = require('../config/supabase');
-const requireAuth = require('../middleware/require-auth');
+const { Router: taoBoDinhTuyen } = require('express');
+const { taoKhachHangSupabase } = require('../config/supabase');
+const yeuCauXacThuc = require('../middleware/require-auth');
 
-const router = Router();
+const boDinhTuyen = taoBoDinhTuyen();
 
-router.get('/', async (_request, response, next) => {
+boDinhTuyen.get('/', async (_yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const supabase = createSupabaseClient();
-    if (!supabase) return response.status(503).json({ error: 'Supabase is not configured yet.' });
-    const { data, error } = await supabase
+    const khachSupabase = taoKhachHangSupabase();
+    if (!khachSupabase) return phanHoi.status(503).json({ error: 'Supabase is not configured yet.' });
+    const { data: duLieu, error: loi } = await khachSupabase
       .from('community_posts')
       .select('id, topic, content, is_anonymous, created_at, author_name')
       .order('created_at', { ascending: false })
       .limit(50);
-    if (error) return next(error);
-    return response.json({ posts: data });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.json({ posts: duLieu });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-router.post('/', requireAuth, async (request, response, next) => {
+boDinhTuyen.post('/', yeuCauXacThuc, async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { content, topic, anonymityMode = 'unlinked' } = request.body;
-    if (typeof content !== 'string' || content.trim().length < 3 || content.length > 3000) {
-      return response.status(400).json({ error: 'Post content must be between 3 and 3000 characters.' });
+    const { content: noiDung, topic: chuDe, anonymityMode: cheDoDanhTinh = 'unlinked' } = yeuCau.body;
+    if (typeof noiDung !== 'string' || noiDung.trim().length < 3 || noiDung.length > 3000) {
+      return phanHoi.status(400).json({ error: 'Post content must be between 3 and 3000 characters.' });
     }
-    if (typeof topic !== 'string' || topic.length > 40) {
-      return response.status(400).json({ error: 'A valid topic is required.' });
+    if (typeof chuDe !== 'string' || chuDe.length > 40) {
+      return phanHoi.status(400).json({ error: 'A valid topic is required.' });
     }
-    if (!['unlinked', 'moderator_only', 'public'].includes(anonymityMode)) {
-      return response.status(400).json({ error: 'Choose a valid post identity mode.' });
+    if (!['unlinked', 'moderator_only', 'public'].includes(cheDoDanhTinh)) {
+      return phanHoi.status(400).json({ error: 'Choose a valid post identity mode.' });
     }
-    const { error } = await request.supabase
+    const { error: loi } = await yeuCau.supabase
       .from('posts')
       .insert({
-        content: content.trim(),
-        topic,
-        is_anonymous: anonymityMode !== 'public',
-        anonymity_mode: anonymityMode,
-        author_user_id: anonymityMode === 'unlinked' ? null : request.user.id,
+        content: noiDung.trim(),
+        topic: chuDe,
+        is_anonymous: cheDoDanhTinh !== 'public',
+        anonymity_mode: cheDoDanhTinh,
+        author_user_id: cheDoDanhTinh === 'unlinked' ? null : yeuCau.user.id,
         status: 'pending_ai'
       });
-    if (error) return next(error);
-    return response.status(201).json({ message: 'Post submitted for review.', status: 'pending_ai' });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.status(201).json({ message: 'Post submitted for review.', status: 'pending_ai' });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-module.exports = router;
+module.exports = boDinhTuyen;

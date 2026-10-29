@@ -96,6 +96,29 @@ h2 { margin-bottom: 9px; font-size: 19px; line-height: 1.35; font-weight: 700; }
 .rating-row input:focus-visible + span { outline: 3px solid rgba(82,119,106,.35); }
 .rating-row small { display: block; margin-top: 6px; color: #78867d; font-size: 9px; text-align: center; }
 .checkin-panel .button { align-self: flex-start; margin-top: 7px; }
+.assessment-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.assessment-choice { min-height: 175px; padding: 22px; display: flex; flex-direction: column; align-items: flex-start; border: 1px solid rgba(32, 59, 54, .13); border-radius: 4px; color: var(--ink); background: rgba(255,255,255,.76); text-align: left; cursor: pointer; transition: border-color .18s, transform .18s, background .18s; }
+.assessment-choice:hover { transform: translateY(-2px); border-color: var(--green); background: #fff; }
+.assessment-choice strong { margin: 5px 0 8px; font-family: 'Manrope', sans-serif; font-size: 17px; }
+.assessment-choice span:last-child { margin-top: auto; color: var(--green); font-size: 12px; font-weight: 700; }
+.assessment-choice small { color: var(--muted); font-size: 12px; }
+.assessment-panel { max-width: 790px; padding: 26px; }
+.assessment-panel fieldset { margin: 0; padding: 17px 0; border: 0; border-bottom: 1px solid var(--line); }
+.assessment-panel legend { margin-bottom: 9px; color: var(--ink); font-size: 14px; font-weight: 600; }
+.assessment-panel .rating-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.assessment-panel .rating-row-six { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.assessment-panel .rating-row small { font-size: 10px; }
+.assessment-result { max-width: 790px; margin-top: 18px; padding: 24px; border-left: 3px solid var(--green); background: #eaf1e9; }
+.assessment-result h2 { margin-bottom: 8px; }
+.assessment-result p:last-child { margin-bottom: 0; }
+.assessment-safety { margin-top: 17px; padding: 16px; border-left: 3px solid #a84739; color: #773d35; background: #fff0eb; }
+.assessment-safety p { margin: 7px 0 12px; color: #654943; font-size: 13px; }
+.assessment-safety .button { text-decoration: none; }
+.assessment-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+.assessment-note { max-width: 790px; margin-top: 20px; padding: 15px 18px; border-left: 2px solid var(--coral); color: #65746c; background: rgba(255,255,255,.48); font-size: 12px; }
+.assessment-note p { margin: 0; }
+.assessment-list[hidden] { display: none; }
+.assessment-panel [hidden], .assessment-result[hidden] { display: none; }
 .library-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; }
 .practice-panel { grid-row: span 2; overflow: hidden; }
 .practice-art { min-height: 245px; display: grid; place-items: center; position: relative; overflow: hidden; background: linear-gradient(145deg, #dae9df, #eff1df 70%, #f4dfca); }
@@ -130,6 +153,6 @@ h2 { margin-bottom: 9px; font-size: 19px; line-height: 1.35; font-weight: 700; }
 .dashboard-grid > :nth-child(4) { animation-delay: .18s; }
 @keyframes reveal-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes breathe { from { transform: scale(.84); opacity: .75; } to { transform: scale(1.08); opacity: 1; } }
-@media (max-width: 900px) { .app-shell { padding: 0 4%; } .topbar { height: 76px; gap: 16px; } .main-nav { gap: 17px; } .main-nav a { font-size: 12px; } .dashboard-grid { gap: 13px; } .check-card, .breathing-card, .community-card { padding: 23px; } .breathing-orbit { width: 105px; height: 105px; flex-basis: 105px; } .community-layout { gap: 16px; } }
-@media (max-width: 680px) { .app-shell { padding: 0 19px; } .topbar { height: auto; min-height: 72px; flex-wrap: wrap; padding: 15px 0 9px; row-gap: 10px; } .brand { font-size: 18px; } .header-actions { margin-left: auto; gap: 9px; } .panic-trigger { padding: 8px 9px; font-size: 10px; } .main-nav { order: 3; width: 100%; height: 37px; justify-content: space-between; gap: 9px; overflow-x: auto; } .main-nav a { height: 37px; font-size: 11px; } #app { padding: 31px 0 45px; } .page-heading { align-items: flex-start; margin-bottom: 24px; } .page-heading h1 { max-width: 450px; font-size: 29px; } .page-heading .muted { font-size: 12px; } .date-stamp { min-width: auto; padding: 5px 0 5px 10px; font-size: 8px; } .date-stamp strong { font-size: 15px; } .dashboard-grid, .community-layout, .library-grid { grid-template-columns: 1fr; } .check-card, .breathing-card, .community-card { min-height: 0; padding: 21px; } .mood-options button { width: 20%; } .breathing-card { min-height: 190px; gap: 16px; } .breathing-orbit { width: 92px; height: 92px; flex-basis: 92px; } .breathing-card h2 { font-size: 17px; } .community-layout { gap: 24px; } .support-note p { font-size: 18px; } .site-footer { padding: 14px 0; align-items: flex-start; flex-direction: column; gap: 3px; font-size: 9px; } .practice-panel { grid-row: auto; } .practice-art { min-height: 210px; } .rating-row { gap: 5px; } .rating-row small { font-size: 8px; } .checkin-panel, .account-panel { padding: 20px; } .panic-dialog { padding: 30px 23px 24px; } }
+@media (max-width: 900px) { .app-shell { padding: 0 4%; } .topbar { height: 76px; gap: 16px; } .main-nav { gap: 17px; } .main-nav a { font-size: 12px; } .dashboard-grid { gap: 13px; } .check-card, .breathing-card, .community-card { padding: 23px; } .breathing-orbit { width: 105px; height: 105px; flex-basis: 105px; } .community-layout { gap: 16px; } .assessment-list { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { .app-shell { padding: 0 19px; } .topbar { height: auto; min-height: 72px; flex-wrap: wrap; padding: 15px 0 9px; row-gap: 10px; } .brand { font-size: 18px; } .header-actions { margin-left: auto; gap: 9px; } .panic-trigger { padding: 8px 9px; font-size: 10px; } .main-nav { order: 3; width: 100%; height: 37px; justify-content: space-between; gap: 9px; overflow-x: auto; } .main-nav a { height: 37px; font-size: 11px; } #app { padding: 31px 0 45px; } .page-heading { align-items: flex-start; margin-bottom: 24px; } .page-heading h1 { max-width: 450px; font-size: 29px; } .page-heading .muted { font-size: 12px; } .date-stamp { min-width: auto; padding: 5px 0 5px 10px; font-size: 8px; } .date-stamp strong { font-size: 15px; } .dashboard-grid, .community-layout, .library-grid { grid-template-columns: 1fr; } .check-card, .breathing-card, .community-card { min-height: 0; padding: 21px; } .mood-options button { width: 20%; } .breathing-card { min-height: 190px; gap: 16px; } .breathing-orbit { width: 92px; height: 92px; flex-basis: 92px; } .breathing-card h2 { font-size: 17px; } .community-layout { gap: 24px; } .support-note p { font-size: 18px; } .site-footer { padding: 14px 0; align-items: flex-start; flex-direction: column; gap: 3px; font-size: 9px; } .practice-panel { grid-row: auto; } .practice-art { min-height: 210px; } .rating-row { gap: 5px; } .rating-row small { font-size: 8px; } .checkin-panel, .account-panel { padding: 20px; } .assessment-list { grid-template-columns: 1fr; } .assessment-panel { padding: 18px; } .assessment-panel .rating-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .assessment-panel .rating-row-six { grid-template-columns: repeat(3, minmax(0, 1fr)); } .assessment-panel .rating-row small { font-size: 9px; } .assessment-result { padding: 19px; } .assessment-safety { padding: 14px; } .panic-dialog { padding: 30px 23px 24px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

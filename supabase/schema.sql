@@ -80,7 +80,7 @@ alter table public.profiles enable row level security;
 alter table public.posts enable row level security;
 alter table public.check_ins enable row level security;
 
-create or replace function public.is_admin()
+create or replace function public.la_quan_tri()
 returns boolean
 language sql
 stable
@@ -101,11 +101,12 @@ drop policy if exists "Authors of approved posts are visible" on public.profiles
 drop policy if exists "Members can update their own display name" on public.profiles;
 drop policy if exists "Members can manage own check-ins" on public.check_ins;
 drop policy if exists "Members can submit posts as themselves" on public.posts;
+drop function if exists public.is_admin();
 
 create policy "Members can read their own posts" on public.posts
   for select to authenticated using (author_user_id = auth.uid());
 create policy "Admins can review all posts" on public.posts
-  for select to authenticated using (public.is_admin());
+  for select to authenticated using (public.la_quan_tri());
 create policy "Members can read own profile" on public.profiles
   for select to authenticated using (auth.uid() = id);
 create policy "Authors of approved posts are visible" on public.profiles
@@ -135,48 +136,48 @@ create policy "Members can submit posts as themselves" on public.posts
     )
   );
 
-create or replace function public.enforce_post_rate_limit()
+create or replace function public.kiem_tra_gioi_han_bai_viet()
 returns trigger
 language plpgsql
 security definer
 set search_path = public
 as $$
 declare
-  v_user_id uuid := auth.uid();
-  v_limit public.user_post_limits;
-  v_today date := (now() at time zone 'Asia/Ho_Chi_Minh')::date;
+  ma_nguoi_dung uuid := auth.uid();
+  gioi_han public.user_post_limits;
+  hom_nay date := (now() at time zone 'Asia/Ho_Chi_Minh')::date;
 begin
-  if v_user_id is null then
+  if ma_nguoi_dung is null then
     raise exception 'Authentication is required to submit a post';
   end if;
 
   insert into public.user_post_limits (user_id, limit_date)
-  values (v_user_id, v_today)
+  values (ma_nguoi_dung, hom_nay)
   on conflict (user_id) do nothing;
 
-  select * into v_limit
+  select * into gioi_han
   from public.user_post_limits
-  where user_id = v_user_id
+  where user_id = ma_nguoi_dung
   for update;
 
-  if v_limit.limit_date < v_today then
+  if gioi_han.limit_date < hom_nay then
     update public.user_post_limits
-    set limit_date = v_today, post_count = 0, last_post_at = null
-    where user_id = v_user_id;
-    v_limit.post_count := 0;
-    v_limit.last_post_at := null;
+    set limit_date = hom_nay, post_count = 0, last_post_at = null
+    where user_id = ma_nguoi_dung;
+    gioi_han.post_count := 0;
+    gioi_han.last_post_at := null;
   end if;
 
-  if v_limit.post_count >= 10 then
+  if gioi_han.post_count >= 10 then
     raise exception 'RATE_LIMIT: daily post limit reached';
   end if;
-  if v_limit.last_post_at > now() - interval '30 seconds' then
+  if gioi_han.last_post_at > now() - interval '30 seconds' then
     raise exception 'RATE_LIMIT: wait before submitting another post';
   end if;
 
   update public.user_post_limits
   set post_count = post_count + 1, last_post_at = now()
-  where user_id = v_user_id;
+  where user_id = ma_nguoi_dung;
 
   new.status := 'pending_ai';
   return new;
@@ -184,9 +185,10 @@ end;
 $$;
 
 drop trigger if exists trg_enforce_post_rate_limit on public.posts;
+drop function if exists public.enforce_post_rate_limit();
 create trigger trg_enforce_post_rate_limit
   before insert on public.posts
-  for each row execute function public.enforce_post_rate_limit();
+  for each row execute function public.kiem_tra_gioi_han_bai_viet();
 
 create or replace view public.community_posts as
   select p.id, p.topic, p.content, p.is_anonymous, p.created_at,
@@ -202,7 +204,7 @@ grant select on public.posts to authenticated;
 grant insert on public.posts to authenticated;
 grant select on public.community_posts to anon, authenticated;
 
-create or replace function public.create_profile_for_new_user()
+create or replace function public.tao_ho_so_nguoi_dung_moi()
 returns trigger
 language plpgsql
 security definer set search_path = ''
@@ -215,9 +217,10 @@ end;
 $$;
 
 drop trigger if exists on_auth_user_created on auth.users;
+drop function if exists public.create_profile_for_new_user();
 create trigger on_auth_user_created
   after insert on auth.users
-  for each row execute procedure public.create_profile_for_new_user();
+  for each row execute procedure public.tao_ho_so_nguoi_dung_moi();
 
 create table if not exists public.user_relationships (
   follower_id uuid not null references public.profiles (id) on delete cascade,

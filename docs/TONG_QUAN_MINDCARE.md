@@ -13,7 +13,7 @@ public/
   js/app.js                  Khởi tạo ứng dụng và Panic dialog
   js/router.js               Điều hướng phía trình duyệt
   js/api.js                  Gọi API và escape nội dung
-  js/pages/                  Các trang tổng quan, cộng đồng, check-in, thư viện, tài khoản
+   js/pages/                  Các trang tổng quan, cộng đồng, check-in, tự đánh giá, thư viện, tài khoản
 server/src/
   server.js                  Nạp .env và khởi động Express
   app.js                     Middleware và đăng ký router
@@ -29,6 +29,7 @@ supabase/schema.sql          Bảng, RLS, view cộng đồng và giới hạn �
 - **Tổng quan:** check-in tâm trạng nhanh và đường dẫn đến thư giãn/cộng đồng.
 - **Cộng đồng:** chọn chủ đề, soạn bài và chọn cách hiển thị danh tính. Bài mới được đưa vào hàng chờ kiểm duyệt.
 - **Check-in:** ghi mức tâm trạng, thời lượng/chất lượng giấc ngủ và ghi chú riêng.
+- **Bài tự đánh giá:** DASS-21, PHQ-9, GAD-7, WHO-5 và PSQI; tính điểm ngay trên trình duyệt, không lưu câu trả lời hoặc gửi tới AI. PHQ-9 có thông báo hỗ trợ an toàn khi câu 9 được chọn khác 0. Kết quả chỉ để tham khảo, không thay thế đánh giá chuyên môn.
 - **Thư viện:** bài tập thở có thể tạm dừng và liên kết thông tin sức khỏe tinh thần.
 - **Tài khoản:** đăng ký, đăng nhập, đổi tên hiển thị và đăng xuất.
 - **Panic Button:** hộp thoại grounding cơ bản và liên kết gọi 115. Chưa gửi cảnh báo hay tạo sự kiện trong Supabase.
@@ -113,4 +114,4 @@ Các smoke test hiện tại không kết nối tới project Supabase thật; c
 
 ## 8. Tính năng còn dự kiến
 
-AI chấm bài test/nguy cơ, AI duyệt bài, chat AI, gợi ý chuyên gia/phòng khám, kết bạn bằng UID, quy tắc cộng/trừ điểm đầy đủ, báo cáo PDF, cảnh báo sớm, quick check tuần/ngày, thư viện âm thanh và quản lý panic event chưa được triển khai hoàn chỉnh. Cần đánh giá quyền riêng tư, đồng thuận, bảo mật và an toàn lâm sàng trước khi đưa dữ liệu sức khỏe thật vào production.
+AI chấm bài test/nguy cơ, lưu lịch sử bài tự đánh giá, AI duyệt bài, chat AI, gợi ý chuyên gia/phòng khám, kết bạn bằng UID, quy tắc cộng/trừ điểm đầy đủ, báo cáo PDF, cảnh báo sớm, quick check tuần/ngày, thư viện âm thanh và quản lý panic event chưa được triển khai hoàn chỉnh. Cần đánh giá quyền riêng tư, đồng thuận, bảo mật và an toàn lâm sàng trước khi đưa dữ liệu sức khỏe thật vào production.

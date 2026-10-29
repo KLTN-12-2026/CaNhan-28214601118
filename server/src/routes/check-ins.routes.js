@@ -1,54 +1,54 @@
-const { Router } = require('express');
-const requireAuth = require('../middleware/require-auth');
+const { Router: taoBoDinhTuyen } = require('express');
+const yeuCauXacThuc = require('../middleware/require-auth');
 
-const router = Router();
+const boDinhTuyen = taoBoDinhTuyen();
 
-router.use(requireAuth);
+boDinhTuyen.use(yeuCauXacThuc);
 
-router.get('/', async (request, response, next) => {
+boDinhTuyen.get('/', async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { data, error } = await request.supabase
+    const { data: duLieu, error: loi } = await yeuCau.supabase
       .from('check_ins')
       .select('id, check_in_date, mood_score, sleep_hours, sleep_quality, note, created_at')
       .order('check_in_date', { ascending: false })
       .limit(30);
-    if (error) return next(error);
-    return response.json({ checkIns: data });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.json({ checkIns: duLieu });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-router.post('/', async (request, response, next) => {
+boDinhTuyen.post('/', async (yeuCau, phanHoi, chuyenTiep) => {
   try {
-    const { moodScore, sleepHours, sleepQuality, note } = request.body;
-    if (!Number.isInteger(moodScore) || moodScore < 1 || moodScore > 5) {
-      return response.status(400).json({ error: 'moodScore must be an integer from 1 to 5.' });
+    const { moodScore: diemTamTrang, sleepHours: soGioNgu, sleepQuality: chatLuongGiacNgu, note: ghiChu } = yeuCau.body;
+    if (!Number.isInteger(diemTamTrang) || diemTamTrang < 1 || diemTamTrang > 5) {
+      return phanHoi.status(400).json({ error: 'moodScore must be an integer from 1 to 5.' });
     }
-    if (sleepHours !== undefined && (typeof sleepHours !== 'number' || sleepHours < 0 || sleepHours > 24)) {
-      return response.status(400).json({ error: 'sleepHours must be between 0 and 24.' });
+    if (soGioNgu !== undefined && (typeof soGioNgu !== 'number' || soGioNgu < 0 || soGioNgu > 24)) {
+      return phanHoi.status(400).json({ error: 'sleepHours must be between 0 and 24.' });
     }
-    if (sleepQuality !== undefined && (!Number.isInteger(sleepQuality) || sleepQuality < 1 || sleepQuality > 5)) {
-      return response.status(400).json({ error: 'sleepQuality must be an integer from 1 to 5.' });
+    if (chatLuongGiacNgu !== undefined && (!Number.isInteger(chatLuongGiacNgu) || chatLuongGiacNgu < 1 || chatLuongGiacNgu > 5)) {
+      return phanHoi.status(400).json({ error: 'sleepQuality must be an integer from 1 to 5.' });
     }
 
-    const { data, error } = await request.supabase
+    const { data: duLieu, error: loi } = await yeuCau.supabase
       .from('check_ins')
       .upsert({
-        user_id: request.user.id,
+        user_id: yeuCau.user.id,
         check_in_date: new Date().toISOString().slice(0, 10),
-        mood_score: moodScore,
-        sleep_hours: sleepHours ?? null,
-        sleep_quality: sleepQuality ?? null,
-        note: typeof note === 'string' ? note.slice(0, 500) : null
+        mood_score: diemTamTrang,
+        sleep_hours: soGioNgu ?? null,
+        sleep_quality: chatLuongGiacNgu ?? null,
+        note: typeof ghiChu === 'string' ? ghiChu.slice(0, 500) : null
       }, { onConflict: 'user_id,check_in_date' })
       .select('id, check_in_date, mood_score, sleep_hours, sleep_quality, note')
       .single();
-    if (error) return next(error);
-    return response.status(201).json({ checkIn: data });
-  } catch (error) {
-    return next(error);
+    if (loi) return chuyenTiep(loi);
+    return phanHoi.status(201).json({ checkIn: duLieu });
+  } catch (loi) {
+    return chuyenTiep(loi);
   }
 });
 
-module.exports = router;
+module.exports = boDinhTuyen;

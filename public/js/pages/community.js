@@ -1,7 +1,7 @@
-import { apiRequest, escapeHtml } from '../api.js';
+import { guiYeuCauApi, thoatMaHtml } from '../api.js';
 
-export const communityPage = {
-  render() {
+export const trangCongDong = {
+  ve() {
     return `
       <section class="page-heading reveal"><div><p class="eyebrow">LẮNG NGHE VÀ ĐỒNG CẢM</p><h1>Cộng đồng MindCare</h1><p class="muted">Một nơi để chia sẻ, không phán xét. Bài viết mới sẽ được kiểm duyệt trước khi xuất hiện.</p></div><span class="date-stamp">AN TOÀN<br><strong>♡</strong></span></section>
       <div class="community-layout">
@@ -17,38 +17,38 @@ export const communityPage = {
         <section class="community-feed reveal"><div class="feed-heading"><div><p class="eyebrow">BẢNG TIN</p><h2>Chia sẻ gần đây</h2></div><span class="live-dot">ĐANG LẮNG NGHE</span></div><div id="post-list" class="post-list"><p class="muted">Đang tải bài viết…</p></div></section>
       </div>`;
   },
-  mount(outlet) {
-    const list = outlet.querySelector('#post-list');
-    const message = outlet.querySelector('#post-message');
-    const loadPosts = async () => {
+  gan(dauRa) {
+    const danhSach = dauRa.querySelector('#post-list');
+    const thongBao = dauRa.querySelector('#post-message');
+    const taiBaiViet = async () => {
       try {
-        const { posts } = await apiRequest('/posts');
-        list.innerHTML = posts.length ? posts.map((post) => `
-          <article class="post-item"><div class="post-meta"><span class="post-author">${escapeHtml(post.author_name || 'Ẩn danh')}</span><span class="topic-tag">#${escapeHtml(post.topic)}</span></div><p>${escapeHtml(post.content)}</p><small>${new Date(post.created_at).toLocaleDateString('vi-VN')}</small></article>`).join('') : '<p class="muted">Chưa có bài viết được duyệt. Bạn có thể là người mở đầu.</p>';
-      } catch (error) {
-        list.innerHTML = `<p class="muted">${escapeHtml(error.message)}<br>Thêm thông tin Supabase vào .env để tải bài viết.</p>`;
+        const { posts: cacBaiViet } = await guiYeuCauApi('/posts');
+        danhSach.innerHTML = cacBaiViet.length ? cacBaiViet.map((baiViet) => `
+          <article class="post-item"><div class="post-meta"><span class="post-author">${thoatMaHtml(baiViet.author_name || 'Ẩn danh')}</span><span class="topic-tag">#${thoatMaHtml(baiViet.topic)}</span></div><p>${thoatMaHtml(baiViet.content)}</p><small>${new Date(baiViet.created_at).toLocaleDateString('vi-VN')}</small></article>`).join('') : '<p class="muted">Chưa có bài viết được duyệt. Bạn có thể là người mở đầu.</p>';
+      } catch (loi) {
+        danhSach.innerHTML = `<p class="muted">${thoatMaHtml(loi.message)}<br>Thêm thông tin Supabase vào .env để tải bài viết.</p>`;
       }
     };
-    loadPosts();
-    const form = outlet.querySelector('#post-form');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const values = new FormData(form);
-      const button = form.querySelector('[type="submit"]');
-      button.disabled = true;
-      message.textContent = 'Đang gửi bài viết…';
+    taiBaiViet();
+    const bieuMau = dauRa.querySelector('#post-form');
+    bieuMau.addEventListener('submit', async (suKien) => {
+      suKien.preventDefault();
+      const duLieuBieuMau = new FormData(bieuMau);
+      const nutGui = bieuMau.querySelector('[type="submit"]');
+      nutGui.disabled = true;
+      thongBao.textContent = 'Đang gửi bài viết…';
       try {
-        await apiRequest('/posts', {
+        await guiYeuCauApi('/posts', {
           method: 'POST',
-          body: JSON.stringify({ content: values.get('content'), topic: values.get('topic'), anonymityMode: values.get('anonymityMode') })
+          body: JSON.stringify({ content: duLieuBieuMau.get('content'), topic: duLieuBieuMau.get('topic'), anonymityMode: duLieuBieuMau.get('anonymityMode') })
         });
-        form.reset();
-        form.querySelector('[name="anonymityMode"]').value = 'unlinked';
-        message.textContent = 'Bài viết đã gửi và đang chờ kiểm duyệt.';
-      } catch (error) {
-        message.textContent = error.message === 'Sign in is required.' ? 'Đăng nhập để gửi bài viết.' : error.message;
+        bieuMau.reset();
+        bieuMau.querySelector('[name="anonymityMode"]').value = 'unlinked';
+        thongBao.textContent = 'Bài viết đã gửi và đang chờ kiểm duyệt.';
+      } catch (loi) {
+        thongBao.textContent = loi.message === 'Sign in is required.' ? 'Đăng nhập để gửi bài viết.' : loi.message;
       } finally {
-        button.disabled = false;
+        nutGui.disabled = false;
       }
     });
   }

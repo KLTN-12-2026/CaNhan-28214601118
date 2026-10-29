@@ -1,0 +1,121 @@
+1. DASS-21 (Trầm cảm – Lo âu – Stress)
+Hướng dẫn: Hãy chọn mức độ đúng với bạn trong tuần qua. Thang điểm: 0 = Không đúng chút nào, 1 = Đúng một phần, 2 = Đúng phần lớn, 3 = Rất đúng.
+
+STT	Câu hỏi									Điểm
+1	Tôi thấy khó mà thoải mái được						0 1 2 3
+2	Tôi bị khô miệng							0 1 2 3
+3	Tôi không thấy có chút cảm xúc tích cực nào				0 1 2 3
+4	Tôi bị rối loạn nhịp thở (thở gấp, khó thở dù không vận động nặng)	0 1 2 3
+5	Tôi thấy khó bắt tay vào công việc					0 1 2 3
+6	Tôi có xu hướng phản ứng thái quá với mọi tình huống			0 1 2 3
+7	Tôi bị đổ mồ hôi (chẳng hạn mồ hôi tay…)				0 1 2 3
+8	Tôi thấy mình đang suy nghĩ quá nhiều					0 1 2 3
+9	Tôi lo lắng về những tình huống có thể khiến tôi hoảng sợ hoặc
+ tự biến mình thành trò cười							0 1 2 3
+10	Tôi thấy mình chẳng có gì để mong đợi cả				0 1 2 3
+11	Tôi thấy bản thân dễ bị kích động					0 1 2 3
+12	Tôi thấy khó thư giãn được						0 1 2 3
+13	Tôi cảm thấy chán nản, thất vọng					0 1 2 3
+14	Tôi không chấp nhận được việc có cái gì đó xen vào cản trở việc
+ tôi đang làm									0 1 2 3
+15	Tôi thấy mình gần như hoảng loạn					0 1 2 3
+16	Tôi không thấy hăng hái với bất kỳ việc gì nữa				0 1 2 3
+17	Tôi cảm thấy mình chẳng đáng làm người					0 1 2 3
+18	Tôi thấy mình khá dễ phật ý, tự ái					0 1 2 3
+19	Tôi nghe thấy rõ tiếng nhịp tim dù không vận động
+ (tim đập nhanh, hụt nhịp)							0 1 2 3
+20	Tôi hay sợ vô cớ							0 1 2 3
+21	Tôi thấy cuộc sống vô nghĩa						0 1 2 3
+
+Cách tính điểm: DASS-21 gồm 3 thang đo phụ, mỗi thang 7 câu :
+Trầm cảm: câu 3, 5, 10, 13, 16, 17, 21
+Lo âu: câu 2, 4, 7, 9, 15, 19, 20
+Stress: câu 1, 6, 8, 11, 12, 14, 18
+Điểm mỗi thang được tính bằng tổng điểm các câu trong thang đó nhân với 2 để so sánh với thang điểm gốc DASS-42
+
+2. PHQ-9 (Sàng lọc trầm cảm)
+Hướng dẫn: Trong 2 tuần qua, bạn có thường gặp phải các vấn đề sau đây không? Thang điểm: 0 = Không lúc nào, 1 = Vài ngày, 2 = Hơn một nửa số ngày, 3 = Hầu như mỗi ngày.
+
+STT	Câu hỏi									Điểm
+1	Ít quan tâm hoặc thích thú trong mọi công việc				0 1 2 3
+2	Cảm thấy thất vọng, chán nản hoặc không còn hy vọng			0 1 2 3
+3	Khó ngủ hoặc ngủ rất nhiều						0 1 2 3
+4	Cảm thấy mệt mỏi hoặc kiệt sức						0 1 2 3
+5	Chán ăn hoặc ăn quá nhiều						0 1 2 3
+6	Cảm thấy bản thân thất bại, vô dụng hoặc cảm thấy đã 
+làm cho bản thân và gia đình thất vọng						0 1 2 3
+7	Khó tập trung vào công việc, chẳng hạn như đọc báo hay xem TV		0 1 2 3
+8	Di chuyển hoặc nói chuyện quá chậm chạp đến mức mọi người 
+có thể nhận ra. Hoặc cảm thấy bứt rứt, không yên đến mức cử động 
+nhiều hơn bình thường								0 1 2 3
+9	Có ý nghĩ muốn chết đi cho xong hoặc có ý muốn tự làm tổn
+ thương bản thân								0 1 2 3
+
+Câu hỏi bổ sung (không tính điểm): Nếu có gặp phải các vấn đề trên, chúng gây khó khăn như thế nào cho công việc, việc nhà, hoặc các mối quan hệ? → Không khó khăn / Đôi khi khó khăn / Rất khó khăn / Cực kỳ khó khăn
+Ngưỡng cảnh báo: Tổng điểm ≥ 5 → khuyến nghị gặp bác sĩ chuyên khoa
+
+3. GAD-7 (Sàng lọc lo âu lan tỏa)
+Hướng dẫn: Trong 2 tuần qua, bạn có thường xuyên bị làm phiền bởi những vấn đề sau đây không? Thang điểm: 0 = Không có gì, 1 = Vài ngày, 2 = Hơn nửa ngày, 3 = Gần như mỗi ngày.
+
+STT	Câu hỏi									Điểm
+1	Cảm thấy lo lắng, bồn chồn hoặc căng thẳng quá mức			0 1 2 3
+2	Không thể dừng lại hoặc kiểm soát sự lo lắng				0 1 2 3
+3	Lo lắng quá nhiều về những điều khác nhau				0 1 2 3
+4	Gặp khó khăn trong việc thư giãn					0 1 2 3
+5	Bồn chồn đến mức khó ngồi yên một chỗ					0 1 2 3
+6	Dễ bị trở nên cáu gắt hoặc bực mình					0 1 2 3
+7	Cảm thấy sợ hãi như thể có điều gì đó tồi tệ sắp xảy ra			0 1 2 3
+Câu hỏi bổ sung: Nếu bạn đã gặp các vấn đề trên, chúng khiến bạn khó khăn như thế nào trong công việc, việc nhà, hoặc hòa đồng với người khác? → Không khó chút nào / Hơi khó / Rất khó / Cực kỳ khó khăn .
+Phân loại mức độ :
+1–4 điểm: Lo âu tối thiểu
+5–9 điểm: Lo âu nhẹ
+10–14 điểm: Lo âu trung bình
+15–21 điểm: Lo âu trung bình đến nặng
+
+4. WHO-5 (Chỉ số sức khỏe tinh thần)
+Hướng dẫn: Trong 2 tuần qua, bạn cảm thấy như thế nào? Thang điểm: 0 = Không có lúc nào, 1 = Một phần thời gian, 2 = Dưới nửa thời gian, 3 = Hơn nửa thời gian, 4 = Hầu hết thời gian, 5 = Toàn bộ thời gian .
+
+STT	Câu hỏi									Điểm
+1	Tôi cảm thấy vui vẻ và tinh thần thoải mái				0 1 2 3 4 5
+2	Tôi cảm thấy bình tĩnh và thư thái					0 1 2 3 4 5 
+3	Tôi cảm thấy năng động và tràn đầy năng lượng				0 1 2 3 4 5
+4	Tôi thức dậy với cảm giác tỉnh táo và sảng khoái			0 1 2 3 4 5
+5	Cuộc sống hàng ngày của tôi có nhiều điều thú vị			0 1 2 3 4 5
+Cách tính điểm: Tổng điểm thô (0–25) nhân với 4 để chuyển thành thang điểm phần trăm (0–100). Điểm càng cao, sức khỏe tinh thần càng tốt .
+
+5. PSQI (Chỉ số chất lượng giấc ngủ Pittsburgh)
+Hướng dẫn: Các câu hỏi sau liên quan đến thói quen đi ngủ của bạn trong tháng vừa qua.
+
+Phần A – Câu hỏi mở (điền số)
+STT	Câu hỏi
+1	Trong tháng qua, bạn thường lên giường đi ngủ lúc mấy giờ?
+2	Trong tháng qua, mỗi đêm bạn thường mất bao nhiêu phút mới chợp mắt được?
+3	Trong tháng qua, bạn thường thức giấc buổi sáng lúc mấy giờ?
+4	Trong tháng qua, mỗi đêm bạn thường ngủ được mấy tiếng đồng hồ?
+Phần B – Câu hỏi tần suất
+Câu 5: Trong tháng qua, bạn có thường gặp các vấn đề sau gây mất ngủ không? (Thang điểm: 0 = Không có trong tháng qua, 1 = Ít hơn 1 lần/tuần, 2 = 1–2 lần/tuần, 3 = ≥3 lần/tuần) 
+
+Mục	Vấn đề
+a	Không thể ngủ được trong vòng 30 phút
+b	Tỉnh dậy lúc nửa đêm hoặc quá sớm vào buổi sáng
+c	Phải thức dậy để đi vệ sinh
+d	Khó thở
+e	Ho hoặc ngáy to
+f	Cảm thấy rất lạnh
+g	Cảm thấy rất nóng
+h	Có ác mộng
+i	Thấy đau
+k	Lý do khác (mô tả): ………
+
+
+Rất tốt (0) / Tương đối tốt (1) / Tương đối kém (2) / Rất kém (3)
+STT	Câu hỏi									Thang điểm
+6	Trong tháng qua, bạn có thường phải sử dụng thuốc
+ ngủ không (theo đơn hoặc tự mua)?						0 1 2 3
+7	Trong tháng qua, bạn có hay gặp khó khăn để giữ đầu
+ óc tỉnh táo khi lái xe, ăn uống, hoặc tham gia hoạt động xã hội?		0 1 2 3
+8	Trong tháng qua, bạn có gặp khó khăn để duy trì 
+hứng thú hoàn thành công việc không?						0 1 2 3
+9	Trong tháng qua, nhìn chung bạn đánh giá chất lượng
+ giấc ngủ của mình như thế nào?							0 1 2 3
+Thành phần điểm PSQI: Bài test đánh giá trên 7 phương diện: chất lượng giấc ngủ chủ quan, thời gian vào giấc, số giờ ngủ, hiệu quả giấc ngủ, số lần thức giấc, sử dụng thuốc ngủ, và ảnh hưởng ban ngày . Tổng điểm PSQI ≤ 5 = chất lượng giấc ngủ tốt; > 5 = chất lượng giấc ngủ kém .

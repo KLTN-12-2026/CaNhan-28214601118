@@ -1,10 +1,10 @@
-import { startRouter } from './router.js';
+import { batDauBoDinhTuyen } from './router.js';
 
-const panicDialog = document.querySelector('#panic-dialog');
-document.querySelector('#panic-trigger').addEventListener('click', () => panicDialog.showModal());
-document.querySelector('#panic-close').addEventListener('click', () => panicDialog.close());
-panicDialog.addEventListener('click', (event) => {
-  if (event.target === panicDialog) panicDialog.close();
+const hopThoatKhancap = document.querySelector('#panic-dialog');
+document.querySelector('#panic-trigger').addEventListener('click', () => hopThoatKhancap.showModal());
+document.querySelector('#panic-close').addEventListener('click', () => hopThoatKhancap.close());
+hopThoatKhancap.addEventListener('click', (suKien) => {
+  if (suKien.target === hopThoatKhancap) hopThoatKhancap.close();
 });
 
-startRouter();
+batDauBoDinhTuyen();

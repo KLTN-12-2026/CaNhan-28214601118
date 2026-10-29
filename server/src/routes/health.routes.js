@@ -1,14 +1,14 @@
-const { Router } = require('express');
-const { isSupabaseConfigured } = require('../config/supabase');
+const { Router: taoBoDinhTuyen } = require('express');
+const { kiemTraSupabaseDaCauHinh } = require('../config/supabase');
 
-const router = Router();
+const boDinhTuyen = taoBoDinhTuyen();
 
-router.get('/', (_request, response) => {
-  response.json({
+boDinhTuyen.get('/', (_yeuCau, phanHoi) => {
+  phanHoi.json({
     status: 'ok',
     service: 'mindcare-api',
-    supabaseConfigured: isSupabaseConfigured()
+    supabaseConfigured: kiemTraSupabaseDaCauHinh()
   });
 });
 
-module.exports = router;
+module.exports = boDinhTuyen;

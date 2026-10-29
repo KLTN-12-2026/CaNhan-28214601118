@@ -1,24 +1,24 @@
-const { createSupabaseClient } = require('../config/supabase');
+const { taoKhachHangSupabase } = require('../config/supabase');
 
-async function requireAuth(request, response, next) {
-  const accessToken = request.get('authorization')?.replace(/^Bearer\s+/i, '');
-  const supabase = createSupabaseClient();
+async function yeuCauXacThuc(yeuCau, phanHoi, chuyenTiep) {
+  const maTruyCap = yeuCau.get('authorization')?.replace(/^Bearer\s+/i, '');
+  const khachSupabase = taoKhachHangSupabase();
 
-  if (!supabase) {
-    return response.status(503).json({ error: 'Supabase is not configured yet.' });
+  if (!khachSupabase) {
+    return phanHoi.status(503).json({ error: 'Supabase is not configured yet.' });
   }
-  if (!accessToken) {
-    return response.status(401).json({ error: 'Sign in is required.' });
-  }
-
-  const { data, error } = await supabase.auth.getUser(accessToken);
-  if (error || !data.user) {
-    return response.status(401).json({ error: 'Session is invalid or expired.' });
+  if (!maTruyCap) {
+    return phanHoi.status(401).json({ error: 'Sign in is required.' });
   }
 
-  request.user = data.user;
-  request.supabase = createSupabaseClient(accessToken);
-  return next();
+  const { data: duLieu, error: loi } = await khachSupabase.auth.getUser(maTruyCap);
+  if (loi || !duLieu.user) {
+    return phanHoi.status(401).json({ error: 'Session is invalid or expired.' });
+  }
+
+  yeuCau.user = duLieu.user;
+  yeuCau.supabase = taoKhachHangSupabase(maTruyCap);
+  return chuyenTiep();
 }
 
-module.exports = requireAuth;
+module.exports = yeuCauXacThuc;

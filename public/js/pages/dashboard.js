@@ -1,5 +1,5 @@
-export const dashboardPage = {
-  render() {
+export const trangTongQuan = {
+  ve() {
     return `
       <section class="page-heading reveal">
         <div><p class="eyebrow">THỨ HAI · MỘT KHỞI ĐẦU NHẸ NHÀNG</p><h1>Chào bạn, hôm nay bạn thế nào?</h1><p class="muted">Không cần phải ổn ngay. Mình bắt đầu từ điều nhỏ nhất nhé.</p></div>
@@ -30,20 +30,20 @@ export const dashboardPage = {
         <aside class="support-note reveal"><span class="support-line"></span><p>“Bạn không cần giải quyết cả cuộc đời trong một ngày.”</p><small>Một lời nhắc dịu dàng từ MindCare</small></aside>
       </section>`;
   },
-  mount(outlet) {
-    const buttons = [...outlet.querySelectorAll('[data-mood]')];
-    const message = outlet.querySelector('#mood-message');
-    buttons.forEach((button) => button.addEventListener('click', async () => {
-      buttons.forEach((item) => item.classList.toggle('selected', item === button));
-      message.textContent = 'Đang lưu check-in…';
+  gan(dauRa) {
+    const cacNut = [...dauRa.querySelectorAll('[data-mood]')];
+    const thongBao = dauRa.querySelector('#mood-message');
+    cacNut.forEach((nut) => nut.addEventListener('click', async () => {
+      cacNut.forEach((phanTu) => phanTu.classList.toggle('selected', phanTu === nut));
+      thongBao.textContent = 'Đang lưu check-in…';
       try {
-        const { apiRequest } = await import('../api.js');
-        await apiRequest('/check-ins', { method: 'POST', body: JSON.stringify({ moodScore: Number(button.dataset.mood) }) });
-        message.textContent = 'Đã lưu riêng tư vào nhật ký hôm nay.';
-      } catch (error) {
-        message.textContent = error.message === 'Sign in is required.'
+        const { guiYeuCauApi } = await import('../api.js');
+        await guiYeuCauApi('/check-ins', { method: 'POST', body: JSON.stringify({ moodScore: Number(nut.dataset.mood) }) });
+        thongBao.textContent = 'Đã lưu riêng tư vào nhật ký hôm nay.';
+      } catch (loi) {
+        thongBao.textContent = loi.message === 'Sign in is required.'
           ? 'Đăng nhập để lưu check-in riêng tư của bạn.'
-          : error.message;
+          : loi.message;
       }
     }));
   }

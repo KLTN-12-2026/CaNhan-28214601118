@@ -1,19 +1,19 @@
-const { createClient } = require('@supabase/supabase-js');
+const { createClient: taoKhachHang } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const duongDanSupabase = process.env.SUPABASE_URL;
+const khoaCongKhaiSupabase = process.env.SUPABASE_ANON_KEY;
 
-function isSupabaseConfigured() {
-  return Boolean(supabaseUrl && supabaseAnonKey);
+function kiemTraSupabaseDaCauHinh() {
+  return Boolean(duongDanSupabase && khoaCongKhaiSupabase);
 }
 
-function createSupabaseClient(accessToken) {
-  if (!isSupabaseConfigured()) return null;
+function taoKhachHangSupabase(maTruyCap) {
+  if (!kiemTraSupabaseDaCauHinh()) return null;
 
-  return createClient(supabaseUrl, supabaseAnonKey, {
+  return taoKhachHang(duongDanSupabase, khoaCongKhaiSupabase, {
     auth: { persistSession: false, autoRefreshToken: false },
-    ...(accessToken ? { global: { headers: { Authorization: `Bearer ${accessToken}` } } } : {})
+    ...(maTruyCap ? { global: { headers: { Authorization: `Bearer ${maTruyCap}` } } } : {})
   });
 }
 
-module.exports = { createSupabaseClient, isSupabaseConfigured };
+module.exports = { taoKhachHangSupabase, kiemTraSupabaseDaCauHinh };
